@@ -46,6 +46,20 @@ jobs:
           exit-code: "1"
           format: table
 
+       # Build Docker image
+      - name: Build Docker image
+        run: docker build -t devsecops-python:${{ github.sha }} .
+
+      # Scan Docker image
+      - name: Trivy Docker image vulnerability scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: devsecops-python:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
       - name: Gitleaks secret scan
         uses: gitleaks/gitleaks-action@v2.3.9
         env:
