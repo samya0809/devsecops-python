@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devsecops-python
+  namespace: default
+  labels:
+    app: devsecops-python
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devsecops-python
+  template:
+    metadata:
+      labels:
+        app: devsecops-python
+    spec:
+      containers:
+        - name: devsecops-python
+          image: samya0809/devsecops-python:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
